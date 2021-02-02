@@ -1,0 +1,146 @@
+* Section 1: Types and Variables
+** Numbers on the Computer
+
+/This is not really any new info/
+
+- A single bit is the smallest piece of data in a digital system
+- It can be either 0 or 1, so it can store anything that has only
+  two options. 
+
+- A single bit is not enough to encode a number or a piece of text.
+
+- /n/ bits can encode 2^n states
+  - Most common value of n is 8, a /byte/, which lets us encode 256 possible
+    states. 
+  - Can use 256 bytes to represent someone's age, the latin alphabet, etc.
+
+- Float: 32-bit decimal number (single precision)
+- Double: 64-bit decimal number (double precision)
+
+** Core Data types
+- Declarations: Types can be explicitly declared or inferred by the compiler
+  - Either =let a = 123;= or =let a: u8 = 123;=
+
+  - First is just "let a equal 123," second is "let a of type u8 equal 123"
+
+  - u -> unsigned, 8 -> 8 bits, 0-255q
+
+  - Functions can also have explicit return types using the "->" operator
+    - Eg: "fn add(int a: u32, int b: u32) -> u32" 
+
+- Possible data types: i (signed)/ u (unsiged) + number of bits
+  - i8, i16, i32, i64, u8, u16, u32, u64
+  - usize/isize - declare a uint of the native processor size
+    (32-bit machines -> u/i32, 64-bit machines -> u/i64)
+  
+
+- &/* have the same meaning in Rust as in C.  * is a pointer to a variable
+  & is the address of the variable.  It seems like the common practice in 
+  rust is to use the & operator more than creating pointers
+  - pointers can be declared with =let a: *mut/*const u32= 
+  - there are also different library functions that work with pointers and
+    addresses. 
+  
+** Operators
+- Bitwise operators are obly available for integers.
+  - Same operators as in C, | OR, & AND, ^ XOR, ! NOR
+    - =let c = 1 | 2= => Prints "3" //01 | 10 = 11 => 3
+  - Also supports bitshifting, 2^n = 1 << n
+
+- Standard logical operators: <,>,==,etc. 
+** Scope and Shadowing
+This shit is pretty obvious, things go out of scope when they're not in scope,
+you just kinda know.
+
+
+** Constants
+** Stack and Heap
+
+* Rust By Example
+** Structs
+- Structs in Rust are comprised of 3 different use cases.
+  - Tuple structs aka. named Tuples
+  - The Good ol' C structs
+  - Unit structs, field-less and used for generics
+
+#+BEGIN_SRC rust
+// A unit Struct
+struct Unit;
+
+// A tulpe struct
+struct Pair(i32, f32);
+
+// a struct with two fields
+struct Point{
+  x: f32,
+  y: f32,
+}
+
+// Structs can be reused as fields
+// in another struct
+struct Rectangle{
+  top_left: Point,
+  bottom_right: Point,
+}
+
+    // Create a struct with field init shorthand
+    let name = String::from("John");
+    let age = 25;
+    let john = Person { name, age};
+
+    // Instantiate a point
+    let point: Point = Point { x: 10.3, y: 0.4};
+
+    // Access the fields of a point
+    println!("Point coords: ({}, {})", point.x, point.y);
+
+    // Make a new point by using struct update syntax to use
+    // the fields of our other one
+    
+    // ..X will set the value of bottom_right.y to whatever the value of
+    // point.y is
+    let bottom_right = Point { x: 5.2, ..point };
+
+    // "bottom_rignt.y" will be the same as "point.y" because we used
+    // that field from 'point'
+    println!("second point: ({}, {})", bottom_right.x, bottom_right.y);
+
+    // Destructure the point using a let binding
+    let Point { x: top_edge, y: left_edge } =  point;
+
+    let _rectangle = Rectangle {
+        // struct instantiation is an expression too
+        top_left: Point { x: left_edge, y: top_edge },
+        bottom_right: bottom_right, 
+    }
+
+    // Instantiate a unit struct
+    let _unit = Unit;
+
+    // Instantiate a tuple struct
+    let pair = Pair(1, 0.1);
+
+    // Access the fields of a tuple struct
+    println!("Pair contains {:?} and {:?}", pair.0, pair.1);
+
+    //destructure a tuple struct
+    let Pair(integer, decimal) = pair;
+
+    println("Pair contains {:?} and {:?}", integer, decimal);
+#+END_SRC
+
+
+- Don't entirely understand destructuring, but it might just be an alternate way to 
+  declare an instantiation of a struct? 
+  - i.e. =let Pair(integer, decimal) = pair;= assigns a new var of type =Pair(integer, decimal)=
+    to the variable =pair=.  In this case the fields are renamed to integer and decimal?
+
+** Enums
+
+- An enum allows for the creation of a type which may be one of a few different variants.
+  Any variant which is valid as a struct is also valid as an enum.
+
+#+BEGIN_SRC rust
+
+#+END_SRC
+

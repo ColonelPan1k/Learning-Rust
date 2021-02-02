@@ -1,0 +1,17 @@
+* Section 1: Types and Variables
+** Numbers on the Computer
+
+/This is not really any new info/
+
+- A single bit is the smallest piece of data in a digital system
+- It can be either 0 or 1, so it can store anything that has only
+  two options. 
+
+- A single bit is not enough to encode a number or a piece of text.
+
+- /n/ bits can encode 2^n states
+  - Most common value of n is 8, a /byte/, which lets us encode 256 possible
+    states. 
+  - Can use 256 bytes to represent someone's age, the latin alphabet, etc.
+
+

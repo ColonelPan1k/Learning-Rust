@@ -1,0 +1,199 @@
+I'm hoping this course will be useful, but it just seems like it's teaching the dead basics 
+of programming but just doing it in rust.  I'll suffer through it and hopefully learn something.
+
+* Section 1: Types and Variables
+** Numbers on the Computer
+
+/This is not really any new info/
+
+- A single bit is the smallest piece of data in a digital system
+- It can be either 0 or 1, so it can store anything that has only
+  two options. 
+
+- A single bit is not enough to encode a number or a piece of text.
+
+- /n/ bits can encode 2^n states
+  - Most common value of n is 8, a /byte/, which lets us encode 256 possible
+    states. 
+  - Can use 256 bytes to represent someone's age, the latin alphabet, etc.
+
+- Float: 32-bit decimal number (single precision)
+- Double: 64-bit decimal number (double precision)
+
+** Core Data types
+- Declarations: Types can be explicitly declared or inferred by the compiler
+  - Either =let a = 123;= or =let a: u8 = 123;=
+
+  - First is just "let a equal 123," second is "let a of type u8 equal 123"
+
+  - u -> unsigned, 8 -> 8 bits, 0-255q
+
+  - Functions can also have explicit return types using the "->" operator
+    - Eg: "fn add(int a: u32, int b: u32) -> u32" 
+
+- Possible data types: i (signed)/ u (unsiged) + number of bits
+  - i8, i16, i32, i64, u8, u16, u32, u64
+  - usize/isize - declare a uint of the native processor size
+    (32-bit machines -> u/i32, 64-bit machines -> u/i64)
+  
+
+- &/* have the same meaning in Rust as in C.  * is a pointer to a variable
+  & is the address of the variable.  It seems like the common practice in 
+  rust is to use the & operator more than creating pointers
+  - pointers can be declared with =let a: *mut/*const u32= 
+  - there are also different library functions that work with pointers and
+    addresses. 
+  
+** Operators
+- Bitwise operators are obly available for integers.
+  - Same operators as in C, | OR, & AND, ^ XOR, ! NOR
+    - =let c = 1 | 2= => Prints "3" //01 | 10 = 11 => 3
+  - Also supports bitshifting, 2^n = 1 << n
+
+- Standard logical operators: <,>,==,etc. 
+** Scope and Shadowing
+This shit is pretty obvious, things go out of scope when they're not in scope,
+you just kinda know.
+
+Maybe the only new thing is shadowing, when you've got two variables of the same
+name that have overlapping scopes, such as:
+
+#+BEGIN_SRC rust
+{ // major scope
+  let a  = 10;
+  println!("{}", a); // Prints 10
+
+  { // minor scope
+    let a = 15;
+    println!("{}", a); // Prints 15
+  }
+}
+#+END_SRC
+
+This now means that two entirely different variables share the same name.
+This is easily avoided by not being a big stupid idiot and actually naming your
+variables correctly.
+
+** Constants
+- Define constants with: =const NAME: type = val;=
+  - Variable has no fixed address
+  - Defined constants like work the same as C's #define
+    keyword and are done with an in-place substitution
+
+example:
+#+BEGIN_SRC rust
+const VAR: u8 = 12;
+
+fn main(){
+  println!("{}", VAR + 10);
+}
+#+END_SRC
+
+becomes 
+
+#+BEGIN_SRC rust
+const VAR: u8 = 12;
+
+fn main(){
+  println!("{}", /12/ + 10);
+}
+#+END_SRC
+
+at compile time.  
+
+- There are also /static/ variables, which is just like a regular variable
+  but with a fixed value and type. 
+  - This will not do inline substitution and has a fixed memory address
+
+** Stack and Heap
+- declaring variables allocates memory for them on the stack.
+  - Use of the stack means we don't have to worry about deallocating
+    variables after we're done with them
+  - The stack has a fixed size and cannot be infinitely large
+
+- Other choice of dynamic allocation is the heap, which is a block 
+  of memory allocated to be used for long term storage. 
+  - Declaring instantiations of structs will create a pointer to a 
+    block of memory in the heap.  The pointer itself is on the stack, 
+    but the memory it points to is stored in the heap.
+    - use the =Box= construct to allocate memory on the heap
+    - To access the data stored inside a heap variable, the variable
+      must be dereferenced using * (& and * have the same use in rust
+      as in C).
+
+#+BEGIN_SRC rust
+struct Point {
+  x: f64;
+  y: f64;
+}
+
+fn origin() -> Point{ 
+  Point { x: 0.0, y: 0.0 }
+}
+
+fn main() {
+  // declares p1 on the stack
+  let p1 = origin();
+  // declares p2 as a pointer to a Point object 
+  // on the heap
+  let p2 = Box::new(origin());
+}
+#+END_SRC
+
+
+* Section 2: Control Flow
+** If Statements
+The if statement in rust is an expression which evaluates to an answer based on certain conditions.
+This means that it can be used in a variable declaration, eg:
+=let x = if y < 10 { 7 } else { 15 };= which will set x to either 7 or 15 based on the value stored 
+in some variable /y/.
+** While loops
+It's the same syntax as in C, it's just a fucking while loop, there's nothing different about this
+
+#+BEGIN_SRC rust
+let mut x = 1;
+while (x < 10){
+  println!("{}", x);
+  x += 1;
+}
+#+END_SRC  
+
+** For loop
+- The syntax of a for loop is the same as python, but supports more features
+  - To loop through a variable, you can use something like =for x in 0..10=
+  - For loops support using the .. operator for filling in the space between
+    two numbers
+
+One interesting example:
+#+BEGIN_SRC rust
+for (pos, y) in (30..41).enumerate(){
+  println!("({}, {})", pos, y);
+}
+#+END_SRC
+
+- This will let you print out both the numbers
+  between 30 and 40 and also that number's position
+  - Out put takes the form (0, 30), (1, 31), (2, 32)...etc
+** Match statement
+- This is sort of similar to a case/switch statement, but not really.  I'm almsost
+  certain it's based off of pattern matching from languages like haskell.
+
+- This lets you check for a certain variable or type and do something based on that.
+
+ex:
+#+BEGIN_SRC rust
+let country_code = 44;
+let country = match country_code {
+    44 => "UK",
+    46 => "Sweden",
+    7  => "Russia",
+    1..=1000 => "unknown",
+    _ => "invalid",
+}
+#+END_SRC
+
+- This is really similar to haskell and allows for a lot of cool ways to handle recursion
+  and is very productive overall.  It also supports the haskell type "_" for any unspecified 
+  value. 
+** Combination lock
+Programming a combination lock game
