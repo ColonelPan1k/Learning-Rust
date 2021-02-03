@@ -197,3 +197,13 @@ let country = match country_code {
   value. 
 ** Combination lock
 Programming a combination lock game
+* Section 3: Data Structures
+** Structs
+- Structs are defined with the struct keyword.  They are the same as C type structs, but have
+  a few more features
+- Instantiations of a struct are defined like any other variable, using =let x = XYZ=
+  where XYZ is something like =Point { x:3.0, y:5.0 }=
+  - Accessing the fields of a struct uses . notation, so for =let p = Point { x: 1.0, y: 2.0 }=,
+    the field =x= would be accessed with =p.x=
+- Structures can also use other structures
+
